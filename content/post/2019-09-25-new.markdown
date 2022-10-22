@@ -1,0 +1,28 @@
+---
+title: "A .Rmarkdown file"
+author: "Daniel Sussman"
+date: 2019-09-25T21:13:14-05:00
+categories: ["R"]
+tags: ["R Markdown"]
+summary: "We can also write documents with the `.Rmarkdown` extension"
+featured_image: "/images/a-static-image.png"
+---
+
+
+
+# R Markdown
+
+When I use the `.Rmarkdown` file extension it compiles to a `.markdown` file instead of directly to `.html`.
+This means that Hugo converts the file to `.html` instead of R.
+
+We can still write code.
+
+
+```r
+(runif(10))
+```
+
+```
+##  [1] 0.3611831 0.1413262 0.4193007 0.4571213 0.6925642 0.1129214 0.8238227
+##  [8] 0.9159461 0.7738875 0.8945682
+```
