@@ -1,0 +1,48 @@
+---
+title: Second EDA
+author: ~
+date: '2020-11-13'
+slug: second-eda
+categories: []
+tags: []
+description: 'EDA Continuation'
+featured_image: ''
+---
+```{r setup, include=FALSE}
+source(here::here("/content/data_cleaning.R"))
+```
+
+Given the size of our second dataset, we focused on exploring patterns within the second dataset, in order to better determine how we would want to analyze the two datasets together. Note that in the second dataset, we have only kept observations in which race was Asian American, in order to maintian consistency in demographics between our first dataset, AALoQ, and the NAAS. We have joined the two datasets into one combined data set and cleaned the data. Given the findings from the following graphs and tables, we are interested in comparing political views to quality of life. Moreover, we are interested to see how perceptions of quality of life influence political values depedning on religion, education, income, ethnicity, and other values. Our next step is to create dummy variables for some of the categorical variables, in order to perform regression models. 
+
+```{r graph1}
+library(tidyverse)
+library(ggplot2)
+NAAS_clean %>% ggplot() + geom_bar(aes(x=Education, fill = Party_Voting)) + ggtitle("Education and Political Party Affiliation") + labs(fill="Party")
+```
+
+This graph shows education level within the NAAS sample, colored by political party affiliation. We see that the majority of this sample identifies as Democrats. As with the AAoQL, the sample contains a higher education demographic. 
+
+
+```{r graph2}
+NAAS_clean %>% ggplot() + geom_bar(aes(x=Religion, fill = Ban_Muslim)) + ggtitle("Religion vs Views on Banning Muslims in the US") + coord_flip()
+```
+
+This graph illustrates the spread of religions in our sample, and whether or not they support or oppose banning Muslims in the United States.
+
+
+```{r table1}
+NAAS_clean %>% filter(!is.na(Ban_Muslim)) %>%
+  group_by(Religion, Ban_Muslim) %>%
+  summarise(n = n()) %>%
+  mutate(freq = n / sum(n)) %>% as_tibble()
+```
+
+In order to more accuratley understand the results of the previous graph, we have created this table to look at the frequency of each religion supporting or opposing Muslims proportional to the total number of observations of each religion. For all religions, a larger percentage oppose banning Muslims than supoort banning Muslims. Buddhists, Catholics, Baptists, and Methodists have the highest rates of supporting banning Muslims. 
+
+```{r graph3}
+NAAS_clean %>% filter(!is.na(Topic_Important)) %>% filter(!Topic_Important %in% c("(14)OTHQ6_1A:", "(15)OTHQ6_1B:", "(16)OTHQ6_1A:")) %>% ggplot() + geom_bar(aes(x=Topic_Important, fill=Clinton_Impres)) +coord_flip()
+
+```
+
+This graph depicts values that participants identified as being most important to them in relation to politics and how people within each value view Hillary Clinton. Economy/Jobs was the most important topic for politicans to address to the majority of our sample, followed by healthcare and education. 
+

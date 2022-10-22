@@ -1,0 +1,23 @@
+---
+title: interactive_graph
+author: WHYM
+date: '2020-11-20'
+slug: how-to-embed-a-shiny-app-in-blogdown
+categories: []
+tags:
+  - Shiny
+  - Web
+meta_img: []
+# description: Description for the page.
+output:
+  blogdown::html_page:
+    toc: false
+# draft: true
+runtime: shiny
+---
+
+Below shows the graph:
+
+
+<iframe height="800" width="100%" frameborder="no" src="https://interactive-graph.shinyapps.io/my_app/"> </iframe>
+

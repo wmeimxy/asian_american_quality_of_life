@@ -1,0 +1,34 @@
+---
+title: Exploratory Data Analysis Blogpost
+author: WHYM
+date: '2020-11-09'
+slug: exploratory-data-analysis-blogpost
+categories: []
+tags: []
+description: ''
+featured_image: ''
+---
+
+
+
+<div id="exploratory-data-analysis" class="section level2">
+<h2>Exploratory Data Analysis</h2>
+<p>We describe here our exploratory data analysis.
+Graph 1:</p>
+<pre class="r"><code>AALoQ_clean %&gt;% filter(!is.na(Gender)) %&gt;% ggplot() + geom_histogram(aes(x=Education_Completed, fill=Ethnicity))+ ggtitle(&#39;Histogram for Eduation_Completed&#39;)</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<pre><code>## Warning: Removed 33 rows containing non-finite values (stat_bin).</code></pre>
+<p><img src="/post/2020-11-09-exploratory-data-analysis-blogpost_files/figure-html/q1-1.png" width="672" /></p>
+<p>This graph shows the number of years of education completed in our sample and is colored by Ethnicity. This graph helps visualize how educated our sample is and what ethnic groups may have received more or less education. Overall, the graph shows a highly educated sample. Asian Indians are the most educated group, closely followed by Chinese.</p>
+<p>This graph is interesting because it lets us know that the group we are analyzing is highly educated. This is an important factor to consider when assessing income, quality of life, and language barriers. Moreover, it’s interesting to note that some ethnic groups are more educated than others, potentially indicating differences in income, quality of life, or other associated variables between Asian ethnic groups. Our next step would be to examine these associated variables. We would also benefit from creating a proportion of ethnic groups, in order to account for the fact that there may just be more Asian Indians or Chinese individuals in the sample.</p>
+<pre class="r"><code>AALoQ_clean %&gt;% filter(!is.na(Gender)) %&gt;% filter(!is.na(Income)) %&gt;% ggplot() + geom_boxplot(aes(y=Income, x=Quality_of_Life, color=Gender)) + ggtitle(&#39;Quality of Life vs. Income&#39;)</code></pre>
+<pre><code>## Warning: Removed 26 rows containing non-finite values (stat_boxplot).</code></pre>
+<p><img src="/post/2020-11-09-exploratory-data-analysis-blogpost_files/figure-html/q2-1.png" width="672" /></p>
+<p>In this graph, we made a box-plot of Quality of Life against Income, colored by Gender . It shows that the average quality of life is slightly higher among those in a higher income bracket, beginning around 50k. Data is often more dispersed among females, although this is not consistent across all income brackets.</p>
+<p>This graph is interesting because it shows how income affects one’s quality of life and how this differs depending on one’s gender. One would hypothesize that there would be a positive relationship between income level and quality of life, but this graph does not show a distinct linear relationship. We are interested in exploring more relationships to get a better idea of what exactly makes a highly-ranked quality of life, from religion, to primary language, to duration of life in the US.</p>
+<pre class="r"><code>AALoQ_clean %&gt;% ggplot() + geom_bar(aes(x=Quality_of_Life, fill=Religion)) + ggtitle(&#39;Bar Graph for Quality of Life&#39;)</code></pre>
+<pre><code>## Warning: Removed 44 rows containing non-finite values (stat_count).</code></pre>
+<p><img src="/post/2020-11-09-exploratory-data-analysis-blogpost_files/figure-html/q3-1.png" width="672" /></p>
+<p>This graph creates a bar diagram for Quality of Life against count with color by religion. The plot describes the overall distribution for Quality of Life in this dataset with a visual proportion of each religion. In the original survey, Quality of Life is scaled from 1-10. According to the graph, the median Quality of life is around 7.5 and is greater than the mean. We can see that the graph is skewed to the left. No one scaled a life quality of 0. Most people scale their Quality of life above 5.0. The proportion of each religion also seems reasonable.</p>
+<p>This graph is interested because it helps us to get a basic understanding of the distribution for Quality of life, which is the most critical dependent variable we want to analyze for high-level data analysis. Since the Quality of life is relatively high according to the graph, we want to see if Quality of life is related to any other factors in the dataset, including religion, language, education, income level, etc.</p>
+</div>

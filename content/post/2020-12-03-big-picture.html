@@ -1,0 +1,66 @@
+---
+title: Big Picture
+author: ~
+date: '2020-12-03'
+slug: big-picture
+categories: []
+tags: []
+description: ''
+featured_image: ''
+---
+
+
+
+<p>For our big picture, we were interested in how income and education level relate to overall quality of life and political participation among Asian Americans.</p>
+<p>Here are a few of the hypotheses that we are in the process of exploring:
+1. We predict that higher income level and educational level would result in a higher quality of life due to a likelihood of having more access to resources, however, this interaction is moderated by religious affiliation.
+2. We predict that income level and educational level have a significant effect on which political topics of interest, after controlling for gender and age.
+3. We predict that higher income level and educational level result in more political participation, for ex. Calling representatives.
+4. We predict that the longer duration someone lives in the US would result In higher income level and educational level
+5. We predict that English fluency has a positive relationship with income level and educational level.</p>
+<p>We believe this research is significant for political representatives as it illustrates political attitudes and demographic information about their constituents in certain areas. This research also highlights income inequality and brings attention to educational and financial disparities. We find this data particularly important as it studies a population that is generally understudied — Asian Americans. Much statistical research is centered on white Americans, and we want to encourage inclusion and explore trends across different racial and ethnic groups.</p>
+<p>We plan to perform linear regressions, chi-square tests, and other deeper data analyses on the hypotheses we have listed to see if relationships exist between certain variables. We have many preliminary graphs on each individual dataset, but we need to produce more new graphs from our joined dataset.</p>
+<p>Below is some additional EDA we performed that led us to these previously mentioned “big picture” questions.</p>
+<pre class="r"><code>Final_dataset %&gt;% filter(!is.na(clean_Income)) %&gt;% filter(!is.na(Quality_of_Life)) %&gt;% ggplot(aes(x = Quality_of_Life, fill = clean_Income )) + geom_bar()</code></pre>
+<p><img src="/post/2020-12-03-big-picture_files/figure-html/1-1.png" width="672" />
+This graph demonstrates the Quality of Life in the sample, colored by income. People who have a higher percieved quality of life are comprised more of people with a higher income ($70,000 and over) than of people with a lower income (less than $70,000).</p>
+<pre class="r"><code>temp &lt;- Final_dataset %&gt;% filter(!is.na(Marital_Status) &amp; !is.na(Ethnicity)) %&gt;% count(Ethnicity, Marital_Status)
+g &lt;- temp %&gt;% ggplot(aes(x=&quot;&quot;, y=n, fill = Marital_Status)) + geom_bar(stat = &quot;identity&quot;) + coord_polar(&quot;y&quot;, start=0) + facet_wrap(~Ethnicity) + ggtitle(&quot;Marital status vs Ethnicity (Proportion)&quot;)
+g</code></pre>
+<p><img src="/post/2020-12-03-big-picture_files/figure-html/2-1.png" width="672" />
+This graph shows the breakdown of martial status in each ethnicity. It is important to note that the majority of most ethnicities are married and very few are “living with a partner”.</p>
+<pre class="r"><code>temp3 &lt;- AALoQ_clean %&gt;% filter(!is.na(Quality_of_Life) &amp; (Gender == &quot;Female&quot;) &amp; !is.na(Marital_Status)) %&gt;% count(Marital_Status, Quality_of_Life) %&gt;% group_by(Marital_Status) %&gt;% summarise(prop = (sum(Quality_of_Life*n))/sum(n)) %&gt;% ungroup()
+
+AALoQ_clean %&gt;% filter(!is.na(Quality_of_Life) &amp; (Gender == &quot;Female&quot;) &amp; !is.na(Marital_Status)) %&gt;% ggplot(aes(x=Marital_Status)) + geom_violin(aes(y=Quality_of_Life), position=&quot;dodge&quot;, alpha=0.5, outlier.colour=&quot;transparent&quot;) + ggtitle(&quot;Graph 1: Average Quality of Life vs Marital Status (Female)&quot;) + geom_point(data = temp3, aes(y = prop))</code></pre>
+<pre><code>## Warning: Ignoring unknown parameters: outlier.colour</code></pre>
+<p><img src="/post/2020-12-03-big-picture_files/figure-html/3-1.png" width="672" /></p>
+<pre class="r"><code>temp4 &lt;- AALoQ_clean %&gt;% filter(!is.na(Quality_of_Life) &amp; (Gender == &quot;Male&quot;) &amp; !is.na(Marital_Status)) %&gt;% count(Marital_Status, Quality_of_Life) %&gt;% group_by(Marital_Status) %&gt;% summarise(prop = (sum(Quality_of_Life*n))/sum(n)) %&gt;% ungroup()
+
+AALoQ_clean %&gt;% filter(!is.na(Quality_of_Life) &amp; (Gender == &quot;Male&quot;) &amp; !is.na(Marital_Status)) %&gt;% ggplot(aes(x=Marital_Status)) + geom_violin(aes(y=Quality_of_Life), position=&quot;dodge&quot;, alpha=0.5, outlier.colour=&quot;transparent&quot;) + ggtitle(&quot;Graph 2: Average Quality of Life vs Marital Status (Male)&quot;) + geom_point(data = temp4, aes(y = prop))</code></pre>
+<pre><code>## Warning: Ignoring unknown parameters: outlier.colour</code></pre>
+<p><img src="/post/2020-12-03-big-picture_files/figure-html/4-1.png" width="672" /></p>
+<pre class="r"><code>lm1 &lt;- lm(Quality_of_Life ~ Marital_Status+Gender, data = AALoQ_clean)
+summary(lm1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Quality_of_Life ~ Marital_Status + Gender, data = AALoQ_clean)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -7.7091 -0.7274  0.2909  1.2909  2.8326 
+## 
+## Coefficients:
+##                       Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)            7.22876    0.16492  43.831  &lt; 2e-16 ***
+## Marital_StatusMarried  0.48038    0.16666   2.882  0.00398 ** 
+## Marital_StatusOther   -0.06139    0.34300  -0.179  0.85797    
+## Marital_StatusSingle   0.41947    0.17298   2.425  0.01538 *  
+## GenderMale             0.01826    0.06505   0.281  0.77891    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.627 on 2526 degrees of freedom
+##   (78 observations deleted due to missingness)
+## Multiple R-squared:  0.004488,   Adjusted R-squared:  0.002912 
+## F-statistic: 2.847 on 4 and 2526 DF,  p-value: 0.02274</code></pre>
+<p>These graphs represents the Quality of Life observed depending on marital status among feamles (graph one) and amles (graph 2). The point represents the average Quality of Life in each group. We initially predicted that Quality of Life would be higher among married individuals than single individuals. However, this hypothesis was not supported by the data. Instead, we found that both being single and being married have a significant effect on Quality of Life in ASian Americans, regardless of Gender.</p>
