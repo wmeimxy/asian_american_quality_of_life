@@ -1,0 +1,10 @@
+name: my_app
+title:
+username:
+account: interactive-graph
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3276867
+bundleId: 3886875
+url: https://interactive-graph.shinyapps.io/my_app/
+when: 1605918214.0905
