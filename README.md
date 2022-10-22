@@ -20,5 +20,5 @@ Does the relationship extend to what political topic people identify as most imp
 ## Final Result Website:
 https://whym.netlify.app
 
-## A Video Demonstration of the website
+## A Video Demonstration of ShinyApps
 https://www.youtube.com/watch?v=398GFJFMh9o&feature=youtu.be
