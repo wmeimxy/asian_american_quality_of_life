@@ -1,5 +1,7 @@
 # Asian American Quality of Life Study
 
+This is an exploration of the two datasets regarding life of quality for Asian American: Final Report of the Asian American Quality of Life (AAQoL) (https://data.austintexas.gov/City-Government/Final-Report-of-the-Asian-American-Quality-of-Life/hc5t-p62z/data), and The National Asian American Survey (NAAS) Pre-Election Survey (https://www.icpsr.umich.edu/web/RCMD/studies/31481/datadocumentation#).
+
 ## Does Resource Inequality Affect Asian Americans’ Quality of Life and Political Attitudes?
 
 Resource inequality can be described as the process in which resources in a given society are distributed unequally, specifically between different ethnic groups and gender groups. As a result, we often see massive gaps in income level and educational attainment, which often affect many areas of one’s life. We chose to explore how income and education level in particular affect Asian Americans’ overall quality of life, and, as an extension, their political attitudes. Asian Americans’ are underrepresented in most research samples. The current project aims to shed light onto the unique experiences of Asian Americans.
