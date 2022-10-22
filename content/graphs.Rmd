@@ -1,0 +1,59 @@
+---
+title: "markdown"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+
+```{r echo=FALSE}
+library(tidyverse)
+library(dplyr)
+library(plotly)
+```
+
+```{r echo=FALSE}
+Final_dataset <- read_csv("Final_dataset - Final_dataset.csv", guess_max = 1001)
+```
+
+```{r}
+temp <- Final_dataset %>% filter(!is.na(Marital_Status) & !is.na(Ethnicity)) %>% count(Ethnicity, Marital_Status)
+g <- temp %>% ggplot(aes(x="", y=n, fill = Marital_Status)) + geom_bar(stat = "identity") + coord_polar("y", start=0) + facet_wrap(~Ethnicity) + ggtitle("Marital status vs Ethnicity (Proportion)")
+g
+#ggplotly(g)
+```
+
+```{r}
+temp2 <- Final_dataset %>% filter(!is.na(Marital_Status) & !is.na(Ethnicity)) %>% count(Marital_Status, Ethnicity)
+g <- temp2 %>% ggplot(aes(x="", y=n, fill = Ethnicity)) + geom_bar(stat = "identity") + coord_polar("y", start=0) + facet_wrap(~Marital_Status) + ggtitle("Ethnicity vs Marital_Status (Proportion)")
+g
+```
+```{r}
+AALoQ_clean <- read_csv("AALoQ_clean - AALoQ_clean.csv", guess_max = 1001)
+```
+
+
+average quality of life vs marital status (female)
+
+```{r}
+temp3 <- AALoQ_clean %>% filter(!is.na(Quality_of_Life) & (Gender == "Female") & !is.na(Marital_Status)) %>% count(Marital_Status, Quality_of_Life) %>% group_by(Marital_Status) %>% summarise(prop = (sum(Quality_of_Life*n))/sum(n)) %>% ungroup()
+
+AALoQ_clean %>% filter(!is.na(Quality_of_Life) & (Gender == "Female") & !is.na(Marital_Status)) %>% ggplot(aes(x=Marital_Status)) + geom_violin(aes(y=Quality_of_Life), position="dodge", alpha=0.5, outlier.colour="transparent") + ggtitle("average quality of life vs marital status (female)") + geom_point(data = temp3, aes(y = prop))
+```
+```{r}
+temp4 <- AALoQ_clean %>% filter(!is.na(Quality_of_Life) & (Gender == "Male") & !is.na(Marital_Status)) %>% count(Marital_Status, Quality_of_Life) %>% group_by(Marital_Status) %>% summarise(prop = (sum(Quality_of_Life*n))/sum(n)) %>% ungroup()
+
+AALoQ_clean %>% filter(!is.na(Quality_of_Life) & (Gender == "Male") & !is.na(Marital_Status)) %>% ggplot(aes(x=Marital_Status)) + geom_violin(aes(y=Quality_of_Life), position="dodge", alpha=0.5, outlier.colour="transparent") + ggtitle("average quality of life vs marital status (male)") + geom_point(data = temp4, aes(y = prop))
+```
+
+
+```{r}
+Final_dataset %>% filter(!is.na(clean_Income)) %>% filter(!is.na(Politic_Donate)) %>% ggplot() + geom_bar(aes(x=clean_Income, fill=Politic_Donate), position = "fill") + coord_flip() + ggtitle('How Income Affects Political Donations')
+```
+```{r}
+Final_dataset %>% filter(!is.na(Education)) %>% filter(!is.na(Contact_Rep)) %>% ggplot(aes(x = Education,fill = Contact_Rep)) + geom_bar(position = "fill") + coord_flip()
+```

@@ -1,0 +1,147 @@
+---
+date: "2020-12-16T20:21:55-05:00"
+description: ""
+featured_image: 'images/image_post.png'
+tags: 
+title: Big Picture
+---
+
+##Does Resource Inequality Affect Asian Americans’ Quality of Life and Political Attitudes?
+Resource inequality can be described as the process in which resources in a given society are distributed unequally, specifically between different ethnic groups and gender groups. As a result, we often see massive gaps in income level and educational attainment, which often affect many areas of one’s life. We chose to explore how income and education level in particular affect Asian Americans’ overall quality of life, and, as an extension, their political attitudes.
+
+The thesis we want to investigate is: With this data, we will predict Asian Americans’ quality of life and political attitudes based on income and education level. 
+
+Null hypothesis: Income and education level have no effect on Asian Americans’ quality of life and political attitudes.
+
+Alternative hypothesis: Income and education level have an effect on Asian Americans’ quality of life and political attitudes. 
+
+```{r setup, include=FALSE}
+source(here::here("/content/data_cleaning.R"))
+
+for(i in seq_along(Final_dataset$Quality_of_Life)){
+  if(!is.na(Final_dataset$Quality_of_Life[[i]])){
+    if(identical(Final_dataset$Quality_of_Life[[i]], "1") |identical(Final_dataset$Quality_of_Life[[i]], "2") |
+       identical(Final_dataset$Quality_of_Life[[i]], "3")){
+          Final_dataset$Quality_of_Life[[i]] = "Low"
+    }else if(identical(Final_dataset$Quality_of_Life[[i]], "4")| identical(Final_dataset$Quality_of_Life[[i]], "5")| identical(Final_dataset$Quality_of_Life[[i]], "6")){
+      Final_dataset$Quality_of_Life[[i]] = "Med"
+    }else{
+      Final_dataset$Quality_of_Life[[i]] = "High"
+    }
+  }
+}
+
+Final_dataset$Topic_Important <- as.character(Final_dataset$Topic_Important)
+for(i in seq_along(Final_dataset$Topic_Important)){
+  if(!is.na(Final_dataset$Topic_Important[[i]])){
+    if(identical(Final_dataset$Topic_Important[[i]], "Incomes/Gap between rich and poor")| identical(Final_dataset$Topic_Important[[i]], "Taxes")|
+       identical(Final_dataset$Topic_Important[[i]], "Education")| 
+       identical(Final_dataset$Topic_Important[[i]], "Economy/Jobs")){
+      Final_dataset$Topic_Important[[i]]= "Economy/Education"
+    }else if(identical(Final_dataset$Topic_Important[[i]], "Immigration")| identical(Final_dataset$Topic_Important[[i]], "Terrorism/ISIS/National security") |identical(Final_dataset$Topic_Important[[i]], "Social security")|identical(Final_dataset$Topic_Important[[i]], "Government/Broken political system")) {
+      Final_dataset$Topic_Important[[i]]= "Government Policies"
+    }else if(identical(Final_dataset$Topic_Important[[i]], "Racism or Racial discrimination")| identical(Final_dataset$Topic_Important[[i]], "Sexism or Gender discrimination")){
+      Final_dataset$Topic_Important[[i]]= "Human Rights"
+    }else{
+      Final_dataset$Topic_Important[[i]]= "Healthcare"
+    }
+  }
+}
+```
+
+First of all, the following interactive graphs explores how income and educational levels interact with quality of life and political attitude for Asian Americans:  
+```{r, include=FALSE}
+library(widgetframe)
+library(htmlwidgets)
+
+<iframe height="100%" width="100%" frameborder="no" src="https://interactive-graph.shinyapps.io/cs415_final_project_app2/"> </iframe>
+```
+
+```{r}
+Final_dataset %>% 
+  filter(!is.na(clean_Income)) %>% 
+  filter(!is.na(Quality_of_Life)) %>% 
+  ggplot(aes(x = Quality_of_Life, fill = clean_Income)) + 
+  geom_bar() + scale_fill_brewer(name = "Income Level", palette = "Accent") + 
+  xlab("Count") + ylab("Quality of Life") + 
+  ggtitle("Income Level and Quality of Life") 
+```
+This graph illustrates that the majority of our sample has a high quality of life. Of those who have a high quality of life, the majority earn $70,000 and over.
+
+```{r, include=FALSE}
+Final_dataset %>% 
+  filter(!is.na(Education)) %>% 
+  filter(!is.na(Quality_of_Life)) %>% 
+  ggplot(aes(x = Quality_of_Life, fill = Education)) + 
+  geom_bar() + 
+  scale_fill_brewer(name = "Education", palette = "Accent") + 
+  xlab("Count") + ylab("Quality of Life") + 
+  ggtitle(" Education and Quality of Life")
+```
+This graph further highlights that our sample is highly educated (College or Higher) and that the majority have a high perceived quality of life.
+
+```{r, include=FALSE}
+income_topic <- Final_dataset %>% 
+  filter(!is.na(Topic_Important), !is.na(clean_Income)) %>%
+  select(Topic_Important,clean_Income, Age)
+
+income_topic %>% 
+  count(Topic_Important, clean_Income) %>% 
+  ggplot(aes(x="", y=n, fill= Topic_Important)) + 
+  geom_bar(stat="identity") + 
+  coord_polar("y", start=0) + 
+  facet_wrap(~clean_Income) + 
+  ggtitle("Income and Political Priority") + 
+  scale_fill_brewer(name="Political Priority", palette="Spectral")
+```
+
+This graph illustrates the breakdown of political topic priorities by income levels. Across income levels, a small portion of the sample identified human rights as a political topic that was most important to them. The two political topics that the majority of Asian Americans in our sample identified as most important to them were Economy/Education and Healthcare.
+
+```{r, include=FALSE}
+income_topic <- Final_dataset %>%
+  filter(!is.na(Topic_Important), !is.na(Education)) %>%
+  select(Topic_Important, Education, Age)
+
+income_topic %>%
+  count(Topic_Important, Education) %>% 
+  ggplot(aes(x="", y=n, fill= Topic_Important)) + 
+  geom_bar(stat="identity") + coord_polar("y", start=0) + 
+  facet_wrap(~Education) + 
+  ggtitle("Education Level and Political Priority") + 
+  scale_fill_brewer(name="Political Priority", palette="Dark2")
+```
+This graph illustrates the breakdown of political topic priorities by education levels. Of those with a college education or higher, the majority identified Healthcare as the political topic most important to them. Of those with less than a high school education, the majority identified economy/jobs as the political topic most important to them.
+
+This table summarizes the results of the chi-square tests. Note that in the table, ‘significant’ indicates that the p-value is less than 0.05 and thus, there is a relationship between the two variables and we reject the null hypothesis. 
+````{r, include=FALSE}
+chitabble <- matrix(c("Income", "Education", test9$p.value,"Significant", 
+                      "Income", "Quality of Life", test1$p.value,"Significant",
+                      "Education", "Quality of Life",test3$p.value, "Significant",
+                      "Income", "Policy Priority",test2$p.value,"Not Significant",
+                      "Education", "Policy Priority",test5$p.value, "Significant",
+                      "Education", "Mental Health", test4$p.value,
+                      "Significant"),ncol=4,byrow=TRUE)
+colnames(chitabble)<-c("Variable 1", "Variable 2", "P-value", "Significance")
+rownames(chitabble)<- c("Test 1","Test 2", "Test 3", 
+                        "Test 4", "Test 5", "Test 6" )
+chitabble <- as.table(chitabble)
+
+knitr::kable(chitabble)
+```
+
+
+##Conclusions
+
+Quality of Life: 
+
+* Education level impacts quality of life to a certain extent for those in this sample. 
+While they do not account for differentiation in low and high quality of life, education levels do affect the difference between a medium and high quality of life. Specifically, having a college degree or higher versus having a high school degree or less, impacts the odds of quality of life.
+* Income level has some effect on quality of life to a certain extent for those in this sample. 
+* The difference between a low quality of life versus a high quality of life is only significant between the highest income bracket in our sample ($70,000 and above) and the lowest income bracket in our sample ($20,000 or less). 
+* The difference between a medium quality of life and a high quality of life is affected by income level depending on whether you make $50,000 and above or $20,000 or less.
+
+Political Attitudes: 
+
+* Education level impacts political priorities in this sample, i.e., political topics most important to individuals, likelihood to vote, etc. 
+* Specifically, having a college education compared to having a high school education or less affects what political topic one prioritizes. One’s education level will influence their political values.
+* Income level does not generally impact political priorities in this sample. 

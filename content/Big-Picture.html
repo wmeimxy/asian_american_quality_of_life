@@ -1,0 +1,115 @@
+---
+date: '2020-12-16'
+description: 'Main Hypotheses and Conclusions'
+featured_image: 'images/image_post.jpg'
+categories: []
+tags: []
+title: Big Picture
+---
+
+
+
+<div id="does-resource-inequality-affect-asian-americans-quality-of-life-and-political-attitudes" class="section level2">
+<h2>Does Resource Inequality Affect Asian Americans’ Quality of Life and Political Attitudes?</h2>
+<p>Resource inequality can be described as the process in which resources in a given society are distributed unequally, specifically between different ethnic groups and gender groups. As a result, we often see massive gaps in income level and educational attainment, which often affect many areas of one’s life. We chose to explore how income and education level in particular affect Asian Americans’ overall quality of life, and, as an extension, their political attitudes. Asian Americans’ are underrepresented in most research samples. The current project aims to shed light onto the unique experiences of Asian Americans.</p>
+<p>Thesis: The current project aims to investigate the extent to which education levels and income levels influence perceived quality of life and political attitudes.</p>
+<p>The questions we explored are:</p>
+<ul>
+<li>How does income level for Asian Americans change depending on one’s educational level?</li>
+<li>How do education and income levels relate to quality of life in Asian Americans?
+<ul>
+<li>Does the relationship extend to mental health?</li>
+</ul></li>
+<li>How do education and income levels relate to political attitude in Asian Americans?
+<ul>
+<li>Does the relationship extend to the likelihood of voting?</li>
+<li>Does the relationship extend to what political topic people identify as most important (political priority)?</li>
+</ul></li>
+</ul>
+</div>
+<div id="interactive-graphs" class="section level2">
+<h2>Interactive Graphs</h2>
+<p>The following interactive graphs explore how income and educational levels interact with quality of life and political attitude for Asian Americans:</p>
+<iframe height="2500" width="100%" frameborder="no" src="https://interactive-graph.shinyapps.io/cs415_final_project_app2/">
+</iframe>
+<p>We explored whether our variables of interest had significant relationships with one another by conducting chi square tests. The table below summarizes our findings. Please note that “significant” indicates a significant relationship between the two variables (p&lt;0.05).</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="left">Variable 1</th>
+<th align="left">Variable 2</th>
+<th align="left">P-value</th>
+<th align="left">Significance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Test 1</td>
+<td align="left">Income</td>
+<td align="left">Education</td>
+<td align="left">1.90785938134292e-174</td>
+<td align="left">Significant</td>
+</tr>
+<tr class="even">
+<td align="left">Test 2</td>
+<td align="left">Income</td>
+<td align="left">Quality of Life</td>
+<td align="left">3.2850696430931e-29</td>
+<td align="left">Significant</td>
+</tr>
+<tr class="odd">
+<td align="left">Test 3</td>
+<td align="left">Education</td>
+<td align="left">Quality of Life</td>
+<td align="left">0.000499750124937531</td>
+<td align="left">Significant</td>
+</tr>
+<tr class="even">
+<td align="left">Test 4</td>
+<td align="left">Income</td>
+<td align="left">Policy Priority</td>
+<td align="left">0.497331603367607</td>
+<td align="left">Not Significant</td>
+</tr>
+<tr class="odd">
+<td align="left">Test 5</td>
+<td align="left">Education</td>
+<td align="left">Policy Priority</td>
+<td align="left">2.18151668217714e-10</td>
+<td align="left">Significant</td>
+</tr>
+<tr class="even">
+<td align="left">Test 6</td>
+<td align="left">Education</td>
+<td align="left">Mental Health</td>
+<td align="left">0.000499750124937531</td>
+<td align="left">Significant</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="conclusions" class="section level2">
+<h2>Conclusions</h2>
+<p>The following graphs illustrate the main effects of income and education on different outcomes, based on multinomial regressions (outlined on our EDA page).</p>
+<p><img src="/Big-Picture_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>The graphs shows that the probability of earning higher income increases as one’s educational level increases. The probability of earning a lower income decreases as one’s educational level increases.</p>
+</div>
+<div id="quality-of-life" class="section level2">
+<h2>Quality of Life:</h2>
+<p><img src="/Big-Picture_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>This graph illustrates the effect of income level on the probability of having a high, medium, or low quality of life. As you can see, the probability of having a medium quality of life decreases the more money that one make. The probability of having a high quality of life increases the more money one makes.</p>
+<p><img src="/Big-Picture_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>This graph illustrates the effect of education level on the probability of having a high, medium, or low quality of life. As you can see, the probability of having a medium quality of life decreases if you have a college degree or higher . The probability of having a high quality of life increases if you have a college degree or higher.</p>
+</div>
+<div id="political-attitudes" class="section level2">
+<h2>Political Attitudes:</h2>
+<p><img src="/Big-Picture_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>This graph illustrates the effect of income on political priorities. The probability of prioritizing health care as a political policy increases if you make less than $20,000. The probability that you value education/economy as most important is high across this sample, however, it decreases if you make less than $20,000. Overall, the probability of this sample demographic prioritizing human rights as their most important political topic to be addressed is very low.</p>
+<p><img src="/Big-Picture_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>The probability of prioritizing healthcare over other political topics is higher if you have completed high school or college. The probability that you value the economy and education increases if you have less than a high school education. The probability of prioritizing Human Rights or Government Policies as the most important political topic do not change across education groups. There is also a low probability that our sample will identify Human Rights or Government Policies as their political priority.</p>
+</div>
+<div id="final-words" class="section level2">
+<h2>Final Words</h2>
+<p>This research is important in better understanding an understudied demographic in the U.S.: Asian Americans. Our analyses show how resource inequality affects many factors, from quality of life to political attitudes. While these results are indicative of trends of those in the sample, they are not necessarily generalizable to all Asian Americans or other ethnic groups in the U.S. Instead, they can help give us a better idea of why resource inequality is an issue that affects those across a variety of ethnicities, education levels, and income levels. They may also be useful in informing politicians and policy makers how to better meet the needs of Asian Americans. Further research should be done to find possible solutions to these issues of resource inequality.</p>
+</div>

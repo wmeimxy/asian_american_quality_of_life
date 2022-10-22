@@ -1,0 +1,968 @@
+---
+date: '2020-10-23'
+description: 'In-Depth Data Analysis and Visulizations'
+featured_image: 'images/flower_image.png'
+categories: []
+tags: []
+title: Exploratory Data Analysis
+---
+
+
+
+<div id="exploratory-data-analysis" class="section level2">
+<h2>Exploratory Data Analysis</h2>
+<p>As we explored the data, we realized that statistical analyses would be difficult to conduct with so many levels in our variables. Thus, we created three levels of Quality of Life: Low (Scores 1-3), Medium (Scores 4-6), and High (7-10). We also grouped the Political Topic/Political Policy Priority into 4 groups for the purpose of our data analysis. The groups are Economy/Jobs (Income Gaps, Taxes, Education, and Jobs), Government Policy (Immigration, Terrorism, National Security, Social Security, and Government Corruption), Human Rights (Racism, Sexism, and Discrimination), and Other.</p>
+<p>The questions we explored are:</p>
+<ul>
+<li>How does income level for Asian Americans change depending on one’s educational level?</li>
+<li>How do education and income levels relate to quality of life in Asian Americans?
+<ul>
+<li>Does the relationship extend to mental health?</li>
+</ul></li>
+<li>How do education and income levels relate to political attitude in Asian Americans?
+<ul>
+<li>Does the relationship extend to the likelihood of voting?</li>
+<li>Does the relationship extend to what political topic people identify as most important (political priority)?</li>
+</ul></li>
+</ul>
+</div>
+<div id="demographic-graphs" class="section level2">
+<h2>Demographic Graphs</h2>
+<pre class="r"><code>library(tidyverse)
+library(ggplot2)
+
+Final_dataset %&gt;% 
+  ggplot() + geom_bar(aes(x=Ethnicity, fill = &#39;Red&#39;)) + ggtitle(&quot;Ethnicity&quot;) + 
+  coord_flip()</code></pre>
+<p><img src="/eda_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<pre class="r"><code>Final_dataset %&gt;%
+  ggplot() + geom_bar(aes(x=Education, fill = &#39;Red&#39;)) + ggtitle(&quot;Education&quot;)</code></pre>
+<p><img src="/eda_files/figure-html/unnamed-chunk-1-2.png" width="672" /></p>
+<pre class="r"><code>Final_dataset %&gt;%
+  ggplot() + geom_bar(aes(x=clean_Income, fill = &#39;Red&#39;)) + ggtitle(&quot;Income Levels&quot;)</code></pre>
+<p><img src="/eda_files/figure-html/unnamed-chunk-1-3.png" width="672" /></p>
+</div>
+<div id="eda-graphs" class="section level2">
+<h2>EDA Graphs</h2>
+</div>
+<div id="quality-of-life" class="section level2">
+<h2>Quality of Life</h2>
+<p>To better understand how income and education levels interact with perceived quality of life, we made the following graphs:</p>
+<pre class="r"><code>Final_dataset %&gt;% 
+  filter(!is.na(clean_Income)) %&gt;% 
+  filter(!is.na(Quality_of_Life)) %&gt;% 
+  ggplot(aes(x = Quality_of_Life, fill = clean_Income)) + 
+  geom_bar() + scale_fill_brewer(name = &quot;Income Level&quot;, palette = &quot;Accent&quot;) + 
+  xlab(&quot;Count&quot;) + ylab(&quot;Quality of Life&quot;) + 
+  ggtitle(&quot;Income Level and Quality of Life&quot;) </code></pre>
+<p><img src="/eda_files/figure-html/QoL%20Income-1.png" width="672" /></p>
+<p>This graph illustrates that the majority of our sample has a high quality of life. Of those who have a high quality of life, the majority earn $70,000 and over.</p>
+<pre class="r"><code>Final_dataset %&gt;% 
+  filter(!is.na(Education)) %&gt;% 
+  filter(!is.na(Quality_of_Life)) %&gt;% 
+  ggplot(aes(x = Quality_of_Life, fill = Education)) + 
+  geom_bar() + 
+  scale_fill_brewer(name = &quot;Education&quot;, palette = &quot;Accent&quot;) + 
+  xlab(&quot;Count&quot;) + ylab(&quot;Quality of Life&quot;) + 
+  ggtitle(&quot; Education and Quality of Life&quot;) </code></pre>
+<p><img src="/eda_files/figure-html/QoL%20Educ-1.png" width="672" /></p>
+<p>This graph further highlights that our sample is highly educated (College or Higher) and that the majority have a high percieved quality of life.</p>
+</div>
+<div id="mental-health" class="section level2">
+<h2>Mental Health</h2>
+<p>Since we found that our sample does not have a lot of variation in quality of life (majority have a high percieved quality of life), we decided to explore how income and education levels may relate to mental health, a more specific factor that can also provide some insights about the quality of life in Asian Americans.</p>
+<pre class="r"><code>Final_dataset %&gt;% 
+  filter(!is.na(clean_Income)) %&gt;% 
+  filter(!is.na(Mental_Health)) %&gt;% 
+  ggplot() + geom_bar(aes(x=Mental_Health, fill=clean_Income)) + 
+  ggtitle(&#39;Income and Mental Health&#39;) + 
+  scale_fill_brewer(name = &#39;Income Level&#39;, palette=&quot;PiYG&quot;) + 
+  ylab(&quot;Count&quot;) + xlab(&quot;Mental Health Rating&quot;)</code></pre>
+<p><img src="/eda_files/figure-html/MentalHealth%20Income-1.png" width="672" /></p>
+<pre class="r"><code> Final_dataset %&gt;% 
+  filter(!is.na(Education)) %&gt;% 
+  filter(!is.na(Mental_Health)) %&gt;%
+  ggplot() + geom_bar(aes(x=Mental_Health, fill=Education)) +
+  ggtitle(&#39;Education and Mental Health&#39;) + 
+  scale_fill_brewer(name = &#39;Education Level&#39;, palette=&quot;PiYG&quot;) + 
+  ylab(&quot;Count&quot;) + xlab(&quot;Mental Health Rating&quot;)</code></pre>
+<p><img src="/eda_files/figure-html/MentalHealth%20Educ-1.png" width="672" /></p>
+<p>These graphs show that mental health is good across all income and education levels. The majority of our sample identified their mental health as “very good”.</p>
+</div>
+<div id="political-topic-priorities" class="section level2">
+<h2>Political Topic Priorities</h2>
+<p>To better understand how education level and income level impact political priorities and values, we made the following graphs:</p>
+<pre class="r"><code>income_topic &lt;- Final_dataset %&gt;% 
+  filter(!is.na(Topic_Important), !is.na(clean_Income)) %&gt;%
+  select(Topic_Important,clean_Income, Age)
+
+income_topic %&gt;% 
+  count(Topic_Important, clean_Income) %&gt;% 
+  ggplot(aes(x=&quot;&quot;, y=n, fill= Topic_Important)) + 
+  geom_bar(stat=&quot;identity&quot;) + 
+  coord_polar(&quot;y&quot;, start=0) + 
+  facet_wrap(~clean_Income) + 
+  ggtitle(&quot;Income and Political Priority&quot;) + 
+  scale_fill_brewer(name=&quot;Political Priority&quot;, palette=&quot;Spectral&quot;)</code></pre>
+<p><img src="/eda_files/figure-html/income%20policy-1.png" width="672" /></p>
+<p>This graph illustrates the breakdown of political topic priorities by income levels. Across income levels, a small portion of the sample identified human rights as a political topic that was most important to them. The two political topics that the majority of Asian Americans in our sample identified as most important to them were Economy/Education and Healthcare.</p>
+<pre class="r"><code>income_topic &lt;- Final_dataset %&gt;%
+  filter(!is.na(Topic_Important), !is.na(Education)) %&gt;%
+  select(Topic_Important, Education, Age)
+
+income_topic %&gt;%
+  count(Topic_Important, Education) %&gt;% 
+  ggplot(aes(x=&quot;&quot;, y=n, fill= Topic_Important)) + 
+  geom_bar(stat=&quot;identity&quot;) + coord_polar(&quot;y&quot;, start=0) + 
+  facet_wrap(~Education) + 
+  ggtitle(&quot;Education Level and Political Priority&quot;) + 
+  scale_fill_brewer(name=&quot;Political Priority&quot;, palette=&quot;Dark2&quot;)</code></pre>
+<p><img src="/eda_files/figure-html/q4-1.png" width="672" /></p>
+<p>This graph illustrates the breakdown of political topic priorities by education levels. Of those with a college education or higher, the majority identified Healthcare as the political topic most important to them. Of those with less than a high school education, the majority identified economy/jobs as political topic most important to them.</p>
+</div>
+<div id="chance-of-voting" class="section level2">
+<h2>Chance of Voting</h2>
+<p>We explored how income and education would impact the likelihood of voting in Asian Americans.</p>
+<pre class="r"><code>income_topic &lt;- Final_dataset %&gt;% 
+  filter(!is.na(Chance_Vote), !is.na(clean_Income)) %&gt;% 
+  select(Chance_Vote, clean_Income)
+
+income_topic %&gt;% 
+  count(Chance_Vote, clean_Income) %&gt;%
+  ggplot(aes(x=&quot;&quot;, y=n, fill= Chance_Vote)) + 
+  geom_bar(stat=&quot;identity&quot;) + coord_polar(&quot;y&quot;, start=0) + 
+  facet_wrap(~clean_Income) + 
+  ggtitle(&quot;Income vs. Likelihood of Voting&quot;)</code></pre>
+<p><img src="/eda_files/figure-html/unnamed-chunk-2-1.png" width="672" />
+This graph illustrates that across income levels, the majority of Asian Americans were “absolutley certain that they would vote”.</p>
+<pre class="r"><code>income_topic &lt;- Final_dataset %&gt;% 
+  filter(!is.na(Chance_Vote), !is.na(Education)) %&gt;% 
+  select(Chance_Vote, Education)
+
+income_topic %&gt;% count(Chance_Vote, Education) %&gt;% 
+  ggplot(aes(x=&quot;&quot;, y=n, fill= Chance_Vote)) + 
+  geom_bar(stat=&quot;identity&quot;) + 
+  coord_polar(&quot;y&quot;, start=0) + 
+  facet_wrap(~Education) + 
+  ggtitle(&quot;Education vs. Likelihood of Voting&quot;)</code></pre>
+<p><img src="/eda_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+This graph illustrates that of those with a high school education, the majority of our sample “are absolutely certain they wil vote”. In other education levels, a significant portion “are absolutely certain they will vote”, however, it a less overwhelming majority compared to those who have completed a college education or higher.</p>
+</div>
+<div id="chi-square-tests" class="section level2">
+<h2>Chi Square Tests</h2>
+<p>Since our data is predominantly categorical variables, we ran chi square tests to determine if there are relationships between our variables of interest. If the p-value is less than 0.05, we rejected the null hypothesis, which is that the two variables are independent. The alternative hypothesis is then that there is a significant relationship between the two variables.</p>
+<p>Income and Education: Chi Square Test</p>
+<pre class="r"><code>library(gplots)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;gplots&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+##     lowess</code></pre>
+<pre class="r"><code>Income_vs_Edc &lt;-Final_dataset %&gt;% 
+  filter(!is.na(clean_Income), !is.na(Education))
+chi9&lt;-  table(Income_vs_Edc$clean_Income, Income_vs_Edc$Education)
+test9 &lt;- chisq.test(chi9)
+balloonplot(t(chi9), main =&quot;Education&quot;, xlab =&quot;&quot;, ylab=&quot;&quot;, 
+            label = FALSE, show.margins = FALSE)</code></pre>
+<p><img src="/eda_files/figure-html/chi%20sq%20income%20v%20educ-1.png" width="672" />
+There is a significant relationship between income and education. From the results of the chi-square test and the graph shown above, we can see that the probability of getting a higher education increases as the income level increases.</p>
+<p>Income and Quality of Life: Chi Square Test</p>
+<pre class="r"><code>Income_vs_Q &lt;- Final_dataset %&gt;% 
+  filter(!is.na(Quality_of_Life), Quality_of_Life !=0, !is.na(clean_Income))
+chi1 &lt;- table(Income_vs_Q$Quality_of_Life, Income_vs_Q$clean_Income)
+test1 &lt;- chisq.test(chi1)
+test1$p.value</code></pre>
+<pre><code>## [1] 3.28507e-29</code></pre>
+<p>There is a significant relationship between income and Quality of Life.</p>
+<p>Education and Quality of Life: Chi Square Test</p>
+<pre class="r"><code>Ed_vs_Q &lt;-Final_dataset %&gt;% 
+  filter(!is.na(Education), !is.na(Quality_of_Life))
+chi3&lt;-  table(Ed_vs_Q$Education, Ed_vs_Q$Quality_of_Life)
+test3 &lt;- chisq.test(chi3, simulate.p.value = TRUE)
+test3$p.value</code></pre>
+<pre><code>## [1] 0.0004997501</code></pre>
+<p>There is a significant relationship between education and Quality of Life.</p>
+<p>Income and Political Priority: Chi Square Test</p>
+<pre class="r"><code>Income_vs_Topic &lt;-Final_dataset %&gt;% 
+  filter(!is.na(Topic_Important), !is.na(clean_Income))
+chi2&lt;-  table(Income_vs_Topic$Topic_Important, Income_vs_Topic$clean_Income)
+test2 &lt;- chisq.test(chi2)
+test2$p.value</code></pre>
+<pre><code>## [1] 0.4973316</code></pre>
+<p>There is NOT a significant relationship between income and political priority - they are independent of each other.</p>
+<p>Education and Political Priority: Chi Square Test</p>
+<pre class="r"><code>Education_vs_Topic &lt;-Final_dataset %&gt;% 
+  filter(!is.na(Topic_Important), !is.na(Education))
+chi5&lt;-  table(Education_vs_Topic$Topic_Important, Education_vs_Topic$Education)
+test5 &lt;- chisq.test(chi5)
+test5$p.value</code></pre>
+<pre><code>## [1] 2.181517e-10</code></pre>
+<p>There is a significant relationship between education and political priority</p>
+<p>Education and Mental Health: Chi Square Test</p>
+<pre class="r"><code>Ed_vs_Mental &lt;-Final_dataset %&gt;% 
+  filter(!is.na(Education), !is.na(Mental_Health))
+chi4&lt;-  table(Ed_vs_Mental$Education, Ed_vs_Mental$Mental_Health)
+test4 &lt;- chisq.test(chi4, simulate.p.value = TRUE)
+test4$p.value</code></pre>
+<pre><code>## [1] 0.0004997501</code></pre>
+<p>There is a significant relationship between Education and Mental Health</p>
+<p>The following table summarizes the results of the chi square tests. Note that in the table, ‘significant’ indicates that the p-value is less than 0.05 and thus, the there exists a relationship between the two variables.</p>
+<pre class="r"><code>chitabble &lt;- matrix(c(&quot;Income&quot;, &quot;Education&quot;, test9$p.value,&quot;Significant&quot;, 
+                      &quot;Income&quot;, &quot;Quality of Life&quot;, test1$p.value,&quot;Significant&quot;,
+                      &quot;Education&quot;, &quot;Quality of Life&quot;,test3$p.value, &quot;Significant&quot;,
+                      &quot;Income&quot;, &quot;Policy Priority&quot;,test2$p.value,&quot;Not Significant&quot;,
+                      &quot;Education&quot;, &quot;Policy Priority&quot;,test5$p.value, &quot;Significant&quot;,
+                      &quot;Education&quot;, &quot;Mental Health&quot;, test4$p.value,
+                      &quot;Significant&quot;),ncol=4,byrow=TRUE)
+colnames(chitabble)&lt;-c(&quot;Variable 1&quot;, &quot;Variable 2&quot;, &quot;P-value&quot;, &quot;Significance&quot;)
+rownames(chitabble)&lt;- c(&quot;Test 1&quot;,&quot;Test 2&quot;, &quot;Test 3&quot;, 
+                        &quot;Test 4&quot;, &quot;Test 5&quot;, &quot;Test 6&quot; )
+chitabble &lt;- as.table(chitabble)
+
+knitr::kable(chitabble)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="left">Variable 1</th>
+<th align="left">Variable 2</th>
+<th align="left">P-value</th>
+<th align="left">Significance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Test 1</td>
+<td align="left">Income</td>
+<td align="left">Education</td>
+<td align="left">1.90785938134292e-174</td>
+<td align="left">Significant</td>
+</tr>
+<tr class="even">
+<td align="left">Test 2</td>
+<td align="left">Income</td>
+<td align="left">Quality of Life</td>
+<td align="left">3.2850696430931e-29</td>
+<td align="left">Significant</td>
+</tr>
+<tr class="odd">
+<td align="left">Test 3</td>
+<td align="left">Education</td>
+<td align="left">Quality of Life</td>
+<td align="left">0.000499750124937531</td>
+<td align="left">Significant</td>
+</tr>
+<tr class="even">
+<td align="left">Test 4</td>
+<td align="left">Income</td>
+<td align="left">Policy Priority</td>
+<td align="left">0.497331603367607</td>
+<td align="left">Not Significant</td>
+</tr>
+<tr class="odd">
+<td align="left">Test 5</td>
+<td align="left">Education</td>
+<td align="left">Policy Priority</td>
+<td align="left">2.18151668217714e-10</td>
+<td align="left">Significant</td>
+</tr>
+<tr class="even">
+<td align="left">Test 6</td>
+<td align="left">Education</td>
+<td align="left">Mental Health</td>
+<td align="left">0.000499750124937531</td>
+<td align="left">Significant</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="multinomial-regression-and-probability-tables" class="section level2">
+<h2>Multinomial Regression and Probability Tables</h2>
+<p>To investigate the relationship between income, education, quality of life, and political attitude, we performed the following multinomial regression tests.
+First, we explore the relationship between income and education, which answers our first question: How does income level for Asian Americans change depending on one’s educational level?</p>
+<pre class="r"><code>library(nnet)
+library(effects)</code></pre>
+<pre><code>## Loading required package: carData</code></pre>
+<pre><code>## lattice theme set by effectsTheme()
+## See ?effectsTheme for details.</code></pre>
+<pre class="r"><code>Edc_Income&lt;- multinom(clean_Income ~ Education, data = Final_dataset)</code></pre>
+<pre><code>## # weights:  16 (9 variable)
+## initial  value 6239.710919 
+## iter  10 value 5724.114122
+## final  value 5596.790690 
+## converged</code></pre>
+<pre class="r"><code>plot(Effect(&quot;Education&quot;, Edc_Income))</code></pre>
+<p><img src="/eda_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>The graphs shows that the probability of earning higher income increases as one’s educational level increases. The probability of earning a lower income decreases as one’s educational level increases.</p>
+<p>To determine if education and income have an effect on Quality of Life, we ran the following multinomial logistic regression.</p>
+<pre class="r"><code>mul_QoL&lt;- multinom(Quality_of_Life ~ Education +
+                     clean_Income, data = Final_dataset)</code></pre>
+<pre><code>## # weights:  21 (12 variable)
+## initial  value 2587.231940 
+## iter  10 value 1231.725286
+## iter  20 value 1183.148976
+## final  value 1181.693562 
+## converged</code></pre>
+<pre class="r"><code>z &lt;- summary(mul_QoL)$coefficients/summary(mul_QoL)$standard.errors
+p &lt;- (1 - pnorm(abs(z), 0, 1)) * 2
+p</code></pre>
+<pre><code>##     (Intercept) EducationHS Graduate EducationLess than HS
+## Low           0          8.22197e-01           0.426733172
+## Med           0          5.83102e-06           0.002927113
+##     clean_Income$20,000 to $50,000 clean_Income$50,000 to $70,000
+## Low                      0.1322857                   5.711664e-02
+## Med                      0.2315558                   9.681472e-05
+##     clean_Income$70,000 and over
+## Low                 7.243529e-05
+## Med                 0.000000e+00</code></pre>
+<p>These results indicate that, for our sample…</p>
+<ul>
+<li>The odds that you have a low quality of life than a high quality of life are not different depending on your education level.</li>
+<li>However, the odds that you have a medium quality of life versus a high quality of life are significantly different whether you are a high school graduate or a college graduate.</li>
+<li>The odds that you have a medium quality of life versus a high quality of life are significantly different whether you have less than a high school education or are a college graduate.</li>
+<li>The odds that you have a low quality of life versus a high quality of life are significantly different if you make $70,000 and over than if you make $20,000 or less.</li>
+<li>For all other income groups, the odds that you have a low quality of life compared to a high quality of life are not different than if you make $20,000 or less.</li>
+<li>The odds that you have a medium quality of life versus a high quality of life are significantly different whether you make $50,000 and above or $20,000 or less.</li>
+</ul>
+<p>These results can be interpreted in the context of our sample as follows:</p>
+<ul>
+<li>Education level impacts quality of life to a certain extent. While they do not account for differentiations in low and high quality of life, education levels do effect the difference between a medium and high quality of life. Specifically, having a college degree or higher versus having a high school degree or less, impacts the odds of quality of life.</li>
+<li>Income level impacts quality of live at a certain threshold. The difference between a low quality of life versus a high quality of life is only significant between the highest income bracket in our sample ($70,000 and above) and the lowest income bracket in our smaple ($20,000 or less). The difference between a medium quality of life and a high quality of life is affected by income level depending on whether you make $50,000 and above or $20,000 or less.</li>
+</ul>
+<p>Probability table for Quality of Life vs. Education and Income Levels</p>
+<pre class="r"><code>Final_dataset %&gt;% 
+  select(Quality_of_Life, Education, clean_Income) %&gt;% 
+  filter(!is.na(Quality_of_Life), !is.na(Education), !is.na(clean_Income)) %&gt;%
+  count(Quality_of_Life, Education, clean_Income) %&gt;% 
+  mutate(proportions = n/sum(n)) %&gt;% 
+  as_tibble() %&gt;% arrange(desc(proportions)) %&gt;% 
+  knitr::kable() </code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Quality_of_Life</th>
+<th align="left">Education</th>
+<th align="left">clean_Income</th>
+<th align="right">n</th>
+<th align="right">proportions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">High</td>
+<td align="left">College or Higher</td>
+<td align="left">$70,000 and over</td>
+<td align="right">845</td>
+<td align="right">0.3588110</td>
+</tr>
+<tr class="even">
+<td align="left">High</td>
+<td align="left">College or Higher</td>
+<td align="left">$20,000 to $50,000</td>
+<td align="right">308</td>
+<td align="right">0.1307856</td>
+</tr>
+<tr class="odd">
+<td align="left">High</td>
+<td align="left">College or Higher</td>
+<td align="left">$50,000 to $70,000</td>
+<td align="right">256</td>
+<td align="right">0.1087049</td>
+</tr>
+<tr class="even">
+<td align="left">High</td>
+<td align="left">College or Higher</td>
+<td align="left">$0 to $20,000</td>
+<td align="right">228</td>
+<td align="right">0.0968153</td>
+</tr>
+<tr class="odd">
+<td align="left">Med</td>
+<td align="left">College or Higher</td>
+<td align="left">$20,000 to $50,000</td>
+<td align="right">87</td>
+<td align="right">0.0369427</td>
+</tr>
+<tr class="even">
+<td align="left">Med</td>
+<td align="left">College or Higher</td>
+<td align="left">$0 to $20,000</td>
+<td align="right">84</td>
+<td align="right">0.0356688</td>
+</tr>
+<tr class="odd">
+<td align="left">High</td>
+<td align="left">HS Graduate</td>
+<td align="left">$20,000 to $50,000</td>
+<td align="right">80</td>
+<td align="right">0.0339703</td>
+</tr>
+<tr class="even">
+<td align="left">Med</td>
+<td align="left">College or Higher</td>
+<td align="left">$70,000 and over</td>
+<td align="right">74</td>
+<td align="right">0.0314225</td>
+</tr>
+<tr class="odd">
+<td align="left">Med</td>
+<td align="left">HS Graduate</td>
+<td align="left">$20,000 to $50,000</td>
+<td align="right">48</td>
+<td align="right">0.0203822</td>
+</tr>
+<tr class="even">
+<td align="left">High</td>
+<td align="left">HS Graduate</td>
+<td align="left">$0 to $20,000</td>
+<td align="right">47</td>
+<td align="right">0.0199575</td>
+</tr>
+<tr class="odd">
+<td align="left">Med</td>
+<td align="left">College or Higher</td>
+<td align="left">$50,000 to $70,000</td>
+<td align="right">45</td>
+<td align="right">0.0191083</td>
+</tr>
+<tr class="even">
+<td align="left">High</td>
+<td align="left">HS Graduate</td>
+<td align="left">$70,000 and over</td>
+<td align="right">41</td>
+<td align="right">0.0174098</td>
+</tr>
+<tr class="odd">
+<td align="left">High</td>
+<td align="left">HS Graduate</td>
+<td align="left">$50,000 to $70,000</td>
+<td align="right">30</td>
+<td align="right">0.0127389</td>
+</tr>
+<tr class="even">
+<td align="left">Med</td>
+<td align="left">HS Graduate</td>
+<td align="left">$0 to $20,000</td>
+<td align="right">26</td>
+<td align="right">0.0110403</td>
+</tr>
+<tr class="odd">
+<td align="left">High</td>
+<td align="left">Less than HS</td>
+<td align="left">$0 to $20,000</td>
+<td align="right">24</td>
+<td align="right">0.0101911</td>
+</tr>
+<tr class="even">
+<td align="left">High</td>
+<td align="left">Less than HS</td>
+<td align="left">$20,000 to $50,000</td>
+<td align="right">20</td>
+<td align="right">0.0084926</td>
+</tr>
+<tr class="odd">
+<td align="left">Med</td>
+<td align="left">Less than HS</td>
+<td align="left">$0 to $20,000</td>
+<td align="right">17</td>
+<td align="right">0.0072187</td>
+</tr>
+<tr class="even">
+<td align="left">High</td>
+<td align="left">Less than HS</td>
+<td align="left">$50,000 to $70,000</td>
+<td align="right">15</td>
+<td align="right">0.0063694</td>
+</tr>
+<tr class="odd">
+<td align="left">Med</td>
+<td align="left">Less than HS</td>
+<td align="left">$20,000 to $50,000</td>
+<td align="right">14</td>
+<td align="right">0.0059448</td>
+</tr>
+<tr class="even">
+<td align="left">Med</td>
+<td align="left">HS Graduate</td>
+<td align="left">$50,000 to $70,000</td>
+<td align="right">13</td>
+<td align="right">0.0055202</td>
+</tr>
+<tr class="odd">
+<td align="left">Low</td>
+<td align="left">College or Higher</td>
+<td align="left">$0 to $20,000</td>
+<td align="right">11</td>
+<td align="right">0.0046709</td>
+</tr>
+<tr class="even">
+<td align="left">High</td>
+<td align="left">Less than HS</td>
+<td align="left">$70,000 and over</td>
+<td align="right">9</td>
+<td align="right">0.0038217</td>
+</tr>
+<tr class="odd">
+<td align="left">Med</td>
+<td align="left">HS Graduate</td>
+<td align="left">$70,000 and over</td>
+<td align="right">7</td>
+<td align="right">0.0029724</td>
+</tr>
+<tr class="even">
+<td align="left">Low</td>
+<td align="left">College or Higher</td>
+<td align="left">$20,000 to $50,000</td>
+<td align="right">6</td>
+<td align="right">0.0025478</td>
+</tr>
+<tr class="odd">
+<td align="left">Low</td>
+<td align="left">College or Higher</td>
+<td align="left">$50,000 to $70,000</td>
+<td align="right">4</td>
+<td align="right">0.0016985</td>
+</tr>
+<tr class="even">
+<td align="left">Low</td>
+<td align="left">College or Higher</td>
+<td align="left">$70,000 and over</td>
+<td align="right">4</td>
+<td align="right">0.0016985</td>
+</tr>
+<tr class="odd">
+<td align="left">Low</td>
+<td align="left">HS Graduate</td>
+<td align="left">$20,000 to $50,000</td>
+<td align="right">3</td>
+<td align="right">0.0012739</td>
+</tr>
+<tr class="even">
+<td align="left">Low</td>
+<td align="left">Less than HS</td>
+<td align="left">$0 to $20,000</td>
+<td align="right">2</td>
+<td align="right">0.0008493</td>
+</tr>
+<tr class="odd">
+<td align="left">Med</td>
+<td align="left">Less than HS</td>
+<td align="left">$50,000 to $70,000</td>
+<td align="right">2</td>
+<td align="right">0.0008493</td>
+</tr>
+<tr class="even">
+<td align="left">Med</td>
+<td align="left">Less than HS</td>
+<td align="left">$70,000 and over</td>
+<td align="right">2</td>
+<td align="right">0.0008493</td>
+</tr>
+<tr class="odd">
+<td align="left">Low</td>
+<td align="left">HS Graduate</td>
+<td align="left">$0 to $20,000</td>
+<td align="right">1</td>
+<td align="right">0.0004246</td>
+</tr>
+<tr class="even">
+<td align="left">Low</td>
+<td align="left">HS Graduate</td>
+<td align="left">$50,000 to $70,000</td>
+<td align="right">1</td>
+<td align="right">0.0004246</td>
+</tr>
+<tr class="odd">
+<td align="left">Low</td>
+<td align="left">Less than HS</td>
+<td align="left">$20,000 to $50,000</td>
+<td align="right">1</td>
+<td align="right">0.0004246</td>
+</tr>
+</tbody>
+</table>
+<p>This table represents the conditional probabilities for each category of Quality of Life, Income Level, and Education Level.</p>
+<p>To determine if education and income have an effect on Political Priorities, we ran the following multinomial logistic regression.</p>
+<pre class="r"><code>mul_Topic&lt;- multinom(Topic_Important ~ Education + 
+                       clean_Income, data = Final_dataset)</code></pre>
+<pre><code>## # weights:  28 (18 variable)
+## initial  value 2359.473003 
+## iter  10 value 2021.921974
+## iter  20 value 1999.419950
+## final  value 1999.149276 
+## converged</code></pre>
+<pre class="r"><code>z1 &lt;- summary(mul_Topic)$coefficients/summary(mul_Topic)$standard.errors
+p1 &lt;- (1 - pnorm(abs(z1), 0, 1)) * 2
+p1</code></pre>
+<pre><code>##                      (Intercept) EducationHS Graduate EducationLess than HS
+## Government Policies 8.599665e-03           0.09207432          0.0008902730
+## Healthcare          6.477854e-08           0.02581514          0.0000000000
+## Human Rights        1.165713e-05           0.05792932          0.0003051501
+##                     clean_Income$20,000 to $50,000
+## Government Policies                   4.378097e-01
+## Healthcare                            8.173323e-05
+## Human Rights                          9.064229e-01
+##                     clean_Income$50,000 to $70,000 clean_Income$70,000 and over
+## Government Policies                   4.726782e-01                 3.008437e-01
+## Healthcare                            9.940218e-05                 1.792165e-05
+## Human Rights                          2.867390e-01                 5.796399e-01</code></pre>
+<p>These results indicate that…</p>
+<ul>
+<li>The odds that one prioritizes Government Policies versus Economy/Education are significantly different whether they have less than a high school education or a college degree.</li>
+<li>The odds that one prioritizes Healthcare versus Economy/Education are significantly different whether they have a college degree or a high school degree or less.</li>
+<li>The odds that one prioritizes Human Rights versus Economy/Education are significantly different whether they have less than a high school education or a college degree.</li>
+<li>The odds that one prioritizes Government Policies versus Economy/Education are NOT significantly different across any income level.</li>
+<li>The odds that one prioritizes Healthcare versus Economy/Jobs are significantly different whether they make over $20,000 or less that $20,000.</li>
+<li>The odds that one prioritizes Human Rights versus Economy/Jobs are NOT significantly different across any income level.</li>
+</ul>
+<p>These results can be interpreted as follows:</p>
+<ul>
+<li>Education level impacts what political topics are most important to people. Specifically, having a college education compared to having a high school education or less affects what political topic one prioritizes. One’s education level will influence their political values.</li>
+<li>Income level does not generally impact which political topics are most important to people.</li>
+</ul>
+<p>Probability table for Policy Priority vs. Education and Income Levels</p>
+<pre class="r"><code>Final_dataset %&gt;% 
+  select(Topic_Important, Education, clean_Income) %&gt;% 
+  filter(!is.na(Topic_Important), !is.na(Education), !is.na(clean_Income)) %&gt;%
+  count(Topic_Important, Education, clean_Income) %&gt;% 
+  mutate(proportions = n/sum(n)) %&gt;% 
+  as_tibble() %&gt;% 
+  arrange(desc(proportions)) %&gt;% 
+  knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Topic_Important</th>
+<th align="left">Education</th>
+<th align="left">clean_Income</th>
+<th align="right">n</th>
+<th align="right">proportions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Healthcare</td>
+<td align="left">College or Higher</td>
+<td align="left">$70,000 and over</td>
+<td align="right">209</td>
+<td align="right">0.1227967</td>
+</tr>
+<tr class="even">
+<td align="left">Economy/Education</td>
+<td align="left">College or Higher</td>
+<td align="left">$70,000 and over</td>
+<td align="right">191</td>
+<td align="right">0.1122209</td>
+</tr>
+<tr class="odd">
+<td align="left">Economy/Education</td>
+<td align="left">Less than HS</td>
+<td align="left">$0 to $20,000</td>
+<td align="right">106</td>
+<td align="right">0.0622797</td>
+</tr>
+<tr class="even">
+<td align="left">Government Policies</td>
+<td align="left">College or Higher</td>
+<td align="left">$70,000 and over</td>
+<td align="right">89</td>
+<td align="right">0.0522914</td>
+</tr>
+<tr class="odd">
+<td align="left">Healthcare</td>
+<td align="left">College or Higher</td>
+<td align="left">$50,000 to $70,000</td>
+<td align="right">84</td>
+<td align="right">0.0493537</td>
+</tr>
+<tr class="even">
+<td align="left">Healthcare</td>
+<td align="left">College or Higher</td>
+<td align="left">$20,000 to $50,000</td>
+<td align="right">78</td>
+<td align="right">0.0458284</td>
+</tr>
+<tr class="odd">
+<td align="left">Economy/Education</td>
+<td align="left">College or Higher</td>
+<td align="left">$20,000 to $50,000</td>
+<td align="right">72</td>
+<td align="right">0.0423032</td>
+</tr>
+<tr class="even">
+<td align="left">Economy/Education</td>
+<td align="left">College or Higher</td>
+<td align="left">$50,000 to $70,000</td>
+<td align="right">67</td>
+<td align="right">0.0393655</td>
+</tr>
+<tr class="odd">
+<td align="left">Healthcare</td>
+<td align="left">Less than HS</td>
+<td align="left">$0 to $20,000</td>
+<td align="right">64</td>
+<td align="right">0.0376028</td>
+</tr>
+<tr class="even">
+<td align="left">Healthcare</td>
+<td align="left">College or Higher</td>
+<td align="left">$0 to $20,000</td>
+<td align="right">54</td>
+<td align="right">0.0317274</td>
+</tr>
+<tr class="odd">
+<td align="left">Healthcare</td>
+<td align="left">HS Graduate</td>
+<td align="left">$0 to $20,000</td>
+<td align="right">54</td>
+<td align="right">0.0317274</td>
+</tr>
+<tr class="even">
+<td align="left">Economy/Education</td>
+<td align="left">HS Graduate</td>
+<td align="left">$20,000 to $50,000</td>
+<td align="right">50</td>
+<td align="right">0.0293772</td>
+</tr>
+<tr class="odd">
+<td align="left">Economy/Education</td>
+<td align="left">Less than HS</td>
+<td align="left">$20,000 to $50,000</td>
+<td align="right">48</td>
+<td align="right">0.0282021</td>
+</tr>
+<tr class="even">
+<td align="left">Human Rights</td>
+<td align="left">College or Higher</td>
+<td align="left">$70,000 and over</td>
+<td align="right">43</td>
+<td align="right">0.0252644</td>
+</tr>
+<tr class="odd">
+<td align="left">Economy/Education</td>
+<td align="left">HS Graduate</td>
+<td align="left">$0 to $20,000</td>
+<td align="right">39</td>
+<td align="right">0.0229142</td>
+</tr>
+<tr class="even">
+<td align="left">Healthcare</td>
+<td align="left">HS Graduate</td>
+<td align="left">$20,000 to $50,000</td>
+<td align="right">38</td>
+<td align="right">0.0223267</td>
+</tr>
+<tr class="odd">
+<td align="left">Government Policies</td>
+<td align="left">College or Higher</td>
+<td align="left">$50,000 to $70,000</td>
+<td align="right">34</td>
+<td align="right">0.0199765</td>
+</tr>
+<tr class="even">
+<td align="left">Economy/Education</td>
+<td align="left">Less than HS</td>
+<td align="left">$70,000 and over</td>
+<td align="right">32</td>
+<td align="right">0.0188014</td>
+</tr>
+<tr class="odd">
+<td align="left">Economy/Education</td>
+<td align="left">Less than HS</td>
+<td align="left">$50,000 to $70,000</td>
+<td align="right">31</td>
+<td align="right">0.0182139</td>
+</tr>
+<tr class="even">
+<td align="left">Government Policies</td>
+<td align="left">College or Higher</td>
+<td align="left">$20,000 to $50,000</td>
+<td align="right">30</td>
+<td align="right">0.0176263</td>
+</tr>
+<tr class="odd">
+<td align="left">Government Policies</td>
+<td align="left">Less than HS</td>
+<td align="left">$0 to $20,000</td>
+<td align="right">30</td>
+<td align="right">0.0176263</td>
+</tr>
+<tr class="even">
+<td align="left">Healthcare</td>
+<td align="left">HS Graduate</td>
+<td align="left">$70,000 and over</td>
+<td align="right">24</td>
+<td align="right">0.0141011</td>
+</tr>
+<tr class="odd">
+<td align="left">Economy/Education</td>
+<td align="left">College or Higher</td>
+<td align="left">$0 to $20,000</td>
+<td align="right">22</td>
+<td align="right">0.0129260</td>
+</tr>
+<tr class="even">
+<td align="left">Healthcare</td>
+<td align="left">Less than HS</td>
+<td align="left">$20,000 to $50,000</td>
+<td align="right">19</td>
+<td align="right">0.0111633</td>
+</tr>
+<tr class="odd">
+<td align="left">Government Policies</td>
+<td align="left">Less than HS</td>
+<td align="left">$20,000 to $50,000</td>
+<td align="right">18</td>
+<td align="right">0.0105758</td>
+</tr>
+<tr class="even">
+<td align="left">Human Rights</td>
+<td align="left">College or Higher</td>
+<td align="left">$20,000 to $50,000</td>
+<td align="right">17</td>
+<td align="right">0.0099882</td>
+</tr>
+<tr class="odd">
+<td align="left">Economy/Education</td>
+<td align="left">HS Graduate</td>
+<td align="left">$70,000 and over</td>
+<td align="right">16</td>
+<td align="right">0.0094007</td>
+</tr>
+<tr class="even">
+<td align="left">Government Policies</td>
+<td align="left">HS Graduate</td>
+<td align="left">$0 to $20,000</td>
+<td align="right">15</td>
+<td align="right">0.0088132</td>
+</tr>
+<tr class="odd">
+<td align="left">Government Policies</td>
+<td align="left">College or Higher</td>
+<td align="left">$0 to $20,000</td>
+<td align="right">14</td>
+<td align="right">0.0082256</td>
+</tr>
+<tr class="even">
+<td align="left">Government Policies</td>
+<td align="left">HS Graduate</td>
+<td align="left">$20,000 to $50,000</td>
+<td align="right">14</td>
+<td align="right">0.0082256</td>
+</tr>
+<tr class="odd">
+<td align="left">Human Rights</td>
+<td align="left">College or Higher</td>
+<td align="left">$50,000 to $70,000</td>
+<td align="right">13</td>
+<td align="right">0.0076381</td>
+</tr>
+<tr class="even">
+<td align="left">Economy/Education</td>
+<td align="left">HS Graduate</td>
+<td align="left">$50,000 to $70,000</td>
+<td align="right">12</td>
+<td align="right">0.0070505</td>
+</tr>
+<tr class="odd">
+<td align="left">Human Rights</td>
+<td align="left">Less than HS</td>
+<td align="left">$0 to $20,000</td>
+<td align="right">11</td>
+<td align="right">0.0064630</td>
+</tr>
+<tr class="even">
+<td align="left">Government Policies</td>
+<td align="left">HS Graduate</td>
+<td align="left">$70,000 and over</td>
+<td align="right">8</td>
+<td align="right">0.0047004</td>
+</tr>
+<tr class="odd">
+<td align="left">Healthcare</td>
+<td align="left">HS Graduate</td>
+<td align="left">$50,000 to $70,000</td>
+<td align="right">8</td>
+<td align="right">0.0047004</td>
+</tr>
+<tr class="even">
+<td align="left">Government Policies</td>
+<td align="left">Less than HS</td>
+<td align="left">$50,000 to $70,000</td>
+<td align="right">7</td>
+<td align="right">0.0041128</td>
+</tr>
+<tr class="odd">
+<td align="left">Human Rights</td>
+<td align="left">HS Graduate</td>
+<td align="left">$20,000 to $50,000</td>
+<td align="right">7</td>
+<td align="right">0.0041128</td>
+</tr>
+<tr class="even">
+<td align="left">Human Rights</td>
+<td align="left">Less than HS</td>
+<td align="left">$20,000 to $50,000</td>
+<td align="right">6</td>
+<td align="right">0.0035253</td>
+</tr>
+<tr class="odd">
+<td align="left">Healthcare</td>
+<td align="left">Less than HS</td>
+<td align="left">$70,000 and over</td>
+<td align="right">5</td>
+<td align="right">0.0029377</td>
+</tr>
+<tr class="even">
+<td align="left">Human Rights</td>
+<td align="left">College or Higher</td>
+<td align="left">$0 to $20,000</td>
+<td align="right">5</td>
+<td align="right">0.0029377</td>
+</tr>
+<tr class="odd">
+<td align="left">Government Policies</td>
+<td align="left">HS Graduate</td>
+<td align="left">$50,000 to $70,000</td>
+<td align="right">4</td>
+<td align="right">0.0023502</td>
+</tr>
+<tr class="even">
+<td align="left">Human Rights</td>
+<td align="left">HS Graduate</td>
+<td align="left">$0 to $20,000</td>
+<td align="right">4</td>
+<td align="right">0.0023502</td>
+</tr>
+<tr class="odd">
+<td align="left">Government Policies</td>
+<td align="left">Less than HS</td>
+<td align="left">$70,000 and over</td>
+<td align="right">3</td>
+<td align="right">0.0017626</td>
+</tr>
+<tr class="even">
+<td align="left">Human Rights</td>
+<td align="left">HS Graduate</td>
+<td align="left">$70,000 and over</td>
+<td align="right">3</td>
+<td align="right">0.0017626</td>
+</tr>
+<tr class="odd">
+<td align="left">Healthcare</td>
+<td align="left">Less than HS</td>
+<td align="left">$50,000 to $70,000</td>
+<td align="right">2</td>
+<td align="right">0.0011751</td>
+</tr>
+<tr class="even">
+<td align="left">Human Rights</td>
+<td align="left">HS Graduate</td>
+<td align="left">$50,000 to $70,000</td>
+<td align="right">2</td>
+<td align="right">0.0011751</td>
+</tr>
+</tbody>
+</table>
+<p>This table represents the conditional probabilities for each category of Political Priority (Topic_Important), Income Level, and Education Level.</p>
+</div>
