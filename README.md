@@ -18,7 +18,7 @@ Does the relationship extend to the likelihood of voting?
 Does the relationship extend to what political topic people identify as most important (political priority)?
 
 ## Final Result Website:
-https://whym.netlify.app
+https://whym.netlify.app/big-picture/
 
 ## A Video Demonstration of ShinyApps
 https://www.youtube.com/watch?v=398GFJFMh9o&feature=youtu.be
